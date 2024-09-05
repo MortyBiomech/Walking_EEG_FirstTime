@@ -2,7 +2,18 @@ clc
 clear
 
 %% Change these paths with respect to your system
-study_path = 'C:\Morteza\MyProjects\Walking_EEG_FirstTime\data\';
+main_data_path = 'C:\Morteza\MyProjects\Walking_EEG_FirstTime\data';
+
+study_path1 = 'C:\Morteza\MyProjects\Walking_EEG_FirstTime\data\Walking_Different_Speeds';
+study_path2 = 'C:\Morteza\MyProjects\Walking_EEG_FirstTime\data\Walking_Different_Weights';
+study_path = study_path1;
+
+if strcmp(study_path, study_path1)
+    study_identifier = 1;
+else
+    study_identifier = 2;
+end
+
 processing_path = 'C:\Morteza\MyProjects\Walking_EEG_FirstTime\Code\Matlab\data_processing\';
 addpath(genpath('C:\Morteza\MyProjects\Walking_EEG_FirstTime'))
 
@@ -12,12 +23,18 @@ addpath('C:\Morteza\Toolboxes\Fieldtrip\fieldtrip-20231127\fileio')
 
 %% All signals from all sessions concatenated (it takes time!)
 subject_id = 2;
-rawdata_path = [study_path, '0_source_data\'];
-output = runs_concatenated(subject_id, rawdata_path);
+rawdata_path = [main_data_path, filesep, '0_source_data\'];
+output = extract_streams(subject_id, rawdata_path, study_identifier);
 
 All_EEG_time = output.All_EEG_time;
-All_Experiment = output.All_Exp;
-All_Experiment_time = output.All_Exp_time;
+All_GRF = output.All_GRF;
+All_GRF_time = output.All_GRF_time;
+
+Left_leg_indx = [2 3 6 7];
+Right_leg_indx = [1 4 5 8];
+
+All_GRF_Left  = sum(All_GRF(Left_leg_indx, :), 1);
+All_GRF_Right = sum(All_GRF(Right_leg_indx, :), 1);
 
 
 %% Initialize EEGLAB 
@@ -39,7 +56,7 @@ ftPath = fileparts(which('ft_defaults'));
 addpath(fullfile(ftPath, 'external','xdf')); 
 xdfPath = [rawdata_path, 'sub-', num2str(subject_id), filesep, ...
     'ses-S001\eeg\sub-', num2str(subject_id), ...
-    '_ses-S001_task-Default_run-001_eeg.xdf']; % enter full path to your .xdf file 
+    '_ses-S001_task-WalkingDifferentSpeeds_run-001_eeg.xdf']; % enter full path to your .xdf file 
 
 % load .xdf data to check what is in there
 streams         = load_xdf(xdfPath);
