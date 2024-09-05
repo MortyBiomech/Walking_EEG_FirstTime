@@ -1,3 +1,6 @@
 [submodule "Code/Python/EMG/pytrigno"]
 	path = Code/Python/EMG/pytrigno
 	url = https://github.com/axopy/pytrigno
+[submodule "Code/Matlab/data_processing/BeMoBIL_Pipeline"]
+	path = Code/Matlab/data_processing/BeMoBIL_Pipeline
+	url = git@github.com:BeMoBIL/bemobil-pipeline.git
